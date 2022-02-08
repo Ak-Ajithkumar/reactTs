@@ -1,26 +1,61 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Button from "@material-ui/core/Button";
+import Textfield from "@material-ui/core/TextField";
+import { useEffect, useState } from "react";
+import {
+  getFunction,
+  todoDatasSelector,
+  addFunction,
+  deleteFunction,
+} from "./redux/todoSlice";
 
-function App() {
+import { useSelector, useDispatch } from "react-redux";
+
+export const App = () => {
+  const [description, setDescription] = useState<string>("");
+
+  const listData = useSelector(todoDatasSelector);
+
+  useEffect(() => {
+    dispatch(getFunction());
+  }, []);
+
+  const dispatch = useDispatch();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {" "}
+      <Textfield
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <Button
+        color="primary"
+        onClick={() => {
+          dispatch(addFunction(description));
+          setDescription("");
+        }}
+      >
+        Add Todo
+      </Button>
+      <div>hello</div>
+      <p>
+        {" "}
+        {listData.map((list: any) => (
+          <p>
+            <Button
+              color="primary"
+              onClick={() => {
+                dispatch(deleteFunction(list.id));
+              }}
+            >
+              Delete
+            </Button>
+            {list.id}
+            {list.message}
+            {list.name}
+          </p>
+        ))}
+      </p>
+    </>
   );
-}
-
-export default App;
+};
